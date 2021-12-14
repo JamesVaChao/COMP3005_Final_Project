@@ -28,12 +28,13 @@ python -m pip install -U --force pip
 Then run:
 pip install -r requirements.txt
 
-You can also configure the launch.json by searching with Ctrl+Shift+P. This will let the key F5 always run then intended python file.
+You can also configure the launch.json by searching for it with Ctrl+Shift+P. This will let the key F5 always run then intended python file.
 
 You are now setup.
 
 Troubleshoot:
-if you are missing modules, run "pip install -r requirements.txt" without quotes
+ModuleNotFoundError: If you are missing modules, rerun "pip install -r requirements.txt" without quotes
+ModuleNotFoundError: If a module is still missing, Ctrl+Shift+P, search for "Python: Select Interpreter" and make sure VScode's python is "Python <Version number> ('.venv':venv)"
 
 
 The command
