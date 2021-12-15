@@ -20,7 +20,6 @@ class User:
         self.firstName = ""
         self.lastName = ""
         self.password = ""
-        self.loginMethod = "email"
 
     # Used when a user dictionary is passed in as a parameter. For instance, when creating the user
     @classmethod
@@ -31,7 +30,6 @@ class User:
         #user.passwordHash=data["passwordHash"]
         user.password=data["password"]
 
-        #user.loginMethod = data["loginMethod"]
         return user
 
 
@@ -58,7 +56,6 @@ class User:
         user.lastName=lastName
         user.userID=userID
         user.passwordHash=hashlib.sha512(password.encode('utf-8')).hexdigest()
-        user.loginMethod = "email"
         user.updateSelf()
         return user
 
