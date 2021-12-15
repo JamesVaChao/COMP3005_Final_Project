@@ -8,7 +8,11 @@ function HomePage() {
           <p>You can do this, I believe in you.</p>
         </main>
         <nav>
-          <Link to="/about">About</Link>
+          <Link to="/devpage">devpage</Link>
+          <br/>
+          <Link to="/loginpage">loginpage</Link>
+          <br/>
+          <Link to="/storepage">storepage</Link>
         </nav>
       </>
     );
