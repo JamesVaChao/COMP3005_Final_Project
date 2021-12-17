@@ -5,3 +5,4 @@ resources/__pycache__/user.cpython-39.pyc
 *.pyc
 resources/__pycache__/user.cpython-310.pyc
 resources/__pycache__/book.cpython-310.pyc
+*.pyc
