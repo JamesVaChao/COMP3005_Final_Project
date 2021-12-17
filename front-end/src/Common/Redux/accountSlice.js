@@ -4,7 +4,7 @@ const initialState = {
     email : "",
     lastName : "",
     photoURL : "",
-    userID : "",
+    userID : "JamesUserID",
     passwordHash : "",
     loginMethod: ""
 

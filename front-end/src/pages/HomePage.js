@@ -13,6 +13,14 @@ function HomePage() {
           <Link to="/loginpage">loginpage</Link>
           <br/>
           <Link to="/storepage">storepage</Link>
+          <br/>
+          <Link to="/cartpage">cartpage</Link>
+          <br/>
+          <Link to="/checkoutpage">checkoutpage</Link>          
+          <br/>
+          <Link to="/orderpage">orderpage</Link>
+          <br/>
+          <Link to="/registerpage">registerpage</Link>
         </nav>
       </>
     );

@@ -15,11 +15,13 @@ class User:
             # string password
     """
     #Used when creating a blank user
-    def __init__(self):
-        self.username = ''
-        self.firstName = ""
-        self.lastName = ""
-        self.password = ""
+    def __init__(self ,username = "", firstName="", lastName="", password="", email="", accountType=""):
+        self.username = username
+        self.firstName = firstName
+        self.lastName = lastName
+        self.password = password
+        self.email = email
+        self.accountType = accountType
 
     # Used when a user dictionary is passed in as a parameter. For instance, when creating the user
     @classmethod

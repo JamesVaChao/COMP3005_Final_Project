@@ -4,6 +4,7 @@
     transition: 0.3s;
     text-align: left;
     margin-top: 5px;
+    height:210px
   }
   
   /* On mouse-over, add a deeper shadow */
@@ -23,3 +24,68 @@
     margin-right: 15px;
     margin-top: 10px
   }
+
+  .addToCartButton{
+    height: 40px;
+    width: 150px;
+    background-color: #5CFF5C;
+    background-size: cover;
+    border-radius: 10px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 5px;
+    float:right;
+  }
+.deleteFromCartButton{
+  height: 40px;
+  width: 150px;
+  background-color: #DC143C;
+  background-size: cover;
+  border-radius: 10px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 5px;
+  float:right;
+}
+
+
+
+.order-container {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 
+    inset 0px 11px 8px -10px #CCC,
+    inset 0px -11px 8px -10px #CCC; 
+  
+  transition: 0.3s;
+  text-align: left;
+  margin-top: 5px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  padding-left: 10px;
+  margin-bottom: 50px;
+
+
+}
+
+/* On mouse-over, add a deeper shadow */
+.order-container:hover {
+  box-shadow: 
+    inset 0px 11px 10px 5px #CCC,
+    inset 0px -11px 10px 5px #CCC; 
+}
+
+.order-card {
+  /* Add shadows to create the "card" effect */
+  transition: 0.3s;
+  text-align: left;
+  margin-top: 5px;
+  height:210px
+}
+
+/* On mouse-over, add a deeper shadow */
+.order-card:hover {
+}

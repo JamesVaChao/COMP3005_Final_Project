@@ -2,6 +2,7 @@
 This file is used to perform operations on user information as stored in the DB 
 '''
 import hashlib
+import json
 
 class Book:
 
@@ -20,3 +21,5 @@ class Book:
     def toDict(self):
         return self.__dict__
 
+    def toJson(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
