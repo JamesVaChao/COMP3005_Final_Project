@@ -1,12 +1,13 @@
 const initialState = {
-    login : false,
+    isLoggedIn : false,
     firstName : "Guest",
     email : "",
     lastName : "",
     photoURL : "",
-    userID : "JamesUserID",
+    username : "JamesUserID",
     passwordHash : "",
-    loginMethod: ""
+    loginMethod: "",
+    accountType: "owner"
 
 }
 
@@ -19,7 +20,7 @@ const initialState = {
 
 export default function accountSlice(state = initialState, action) {
     switch (action.type) {
-      case 'account/login': {
+      case 'account/isLoggedIn': {
         return {
             ...state,
             login : action.payload
@@ -27,13 +28,20 @@ export default function accountSlice(state = initialState, action) {
         }
          
       }
-      case 'account/userID': {
+      case 'account/username': {
         return {
             ...state,
-            userID : action.payload
+            username : action.payload
             
         }
          
+      }
+      case 'account/accountType': {
+        return {
+            ...state,
+            accountType : action.payload
+            
+        }
       }
       case 'account/loginMethod': {
         return {
@@ -73,13 +81,7 @@ export default function accountSlice(state = initialState, action) {
             
         }
       }
-      case 'account/photoURL': {
-        return {
-            ...state,
-            photoURL : action.payload
-            
-        }
-      }
+
       default:
         return state
     }

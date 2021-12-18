@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 
 import { useDispatch } from 'react-redux'
-import serverInfo from './../../Common/ServerInfo.js';
+import serverInfo from '../Common/ServerInfo.js';
 import { Navigate  } from 'react-router'
 
 
 const isDevFastLogin =  serverInfo.DEBUG_MODE;
 
 
-const LoginScreen = () => {
+const LoginPage = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [loginResult, setLoginResult] = useState("");
@@ -36,14 +36,13 @@ const LoginScreen = () => {
 
 
   function dispatchBasedOnServerResponse(response) {
-    dispatchAccount({ type: 'account/login', payload: true })
-    dispatchAccount({ type: 'account/loginMethod', payload: response.user.loginMethod })
-    dispatchAccount({ type: 'account/passwordHash', payload: response.user.passwordHash })
+    dispatchAccount({ type: 'account/isLoggedIn', payload: true })
     dispatchAccount({ type: 'account/firstName', payload: response.user.firstName })
     dispatchAccount({ type: 'account/lastName', payload: response.user.lastName })
-    dispatchAccount({ type: 'account/email', payload: response.user.userID })
-    dispatchAccount({ type: 'account/userID', payload: response.user.userID })
-    dispatchAccount({ type: 'account/photoURL', payload: response.user.photoUrl })
+    dispatchAccount({ type: 'account/email', payload: response.user.email })
+    dispatchAccount({ type: 'account/username', payload: response.user.username })
+    dispatchAccount({ type: 'account/password', payload: response.user.password })
+    dispatchAccount({ type: 'account/accountType', payload: response.user.accountType })
   }
 
 
@@ -169,4 +168,4 @@ navButtonText: {
 
 </style>
 */
-export default LoginScreen;
+export default LoginPage;

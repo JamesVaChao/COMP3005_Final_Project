@@ -1,11 +1,17 @@
 import {Link } from "react-router-dom";
+import { useSelector } from 'react-redux'
 
 function HomePage() {
+  
+  const account = state => state.account
+  let accountRedux = useSelector(account);
+
     return (
       <>
         <main>
-          <h2>Welcome to the homepage!</h2>
-          <p>You can do this, I believe in you.</p>
+          <h2>Home Page</h2>
+          <p>Welcome:  {accountRedux.firstName}</p>
+          <p>Account Type: {accountRedux.accountType}</p>
         </main>
         <nav>
           <Link to="/devpage">devpage</Link>
@@ -21,6 +27,24 @@ function HomePage() {
           <Link to="/orderpage">orderpage</Link>
           <br/>
           <Link to="/registerpage">registerpage</Link>
+          
+          {
+            (accountRedux.accountType === 'owner') ? 
+            (
+            <>
+            <br></br>
+            <Link to="/OwnerBookCollectionPage">owner collection page</Link>
+            <br></br>
+            <Link to="/ownerPublisherPage">owner publisher page</Link>            
+            <br></br>
+            <Link to="/ownerDatapage">owner data page</Link>
+            </>
+            ) 
+            : <></>
+            
+          
+            }
+
         </nav>
       </>
     );

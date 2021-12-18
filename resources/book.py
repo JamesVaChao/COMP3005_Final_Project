@@ -18,6 +18,21 @@ class Book:
         self.sales_percent_to_publisher = sales_percent_to_publisher
         self.img_url = img_url
 
+    @classmethod
+    def fromDict(cls, data):
+        book = Book()
+        book.book_id=data["book_id"]
+        book.name=data["name"]
+        book.book_status=data["book_status"]
+        book.author=data["author"]
+        book.genre=data["genre"]
+        book.publisher=data["publisher"]
+        book.number_of_pages=data["number_of_pages"]
+        book.price=data["price"]
+        book.sales_percent_to_publisher=data["sales_percent_to_publisher"]
+        book.img_url=data["img_url"]
+
+        return book
     def toDict(self):
         return self.__dict__
 

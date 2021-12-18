@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useDispatch } from 'react-redux'
 import serverInfo from '../Common/ServerInfo.js';
 import { Navigate  } from 'react-router'
 
@@ -44,10 +44,11 @@ const RegisterScreen = () => {
       "lastName":lastName,
       "email":email,
       "accountType":accountType
-
     }
+
     serverInfo.callServer("POST", "register", body, (response) => {
       if (response.type === "success") {
+        dispatchBasedOnServerResponse(response)
         setRegisterResult(response.type)
         navigateToHome()
 
@@ -71,6 +72,16 @@ const RegisterScreen = () => {
     },
 
   ];
+  const dispatchAccount = useDispatch()
+  function dispatchBasedOnServerResponse(response) {
+    dispatchAccount({ type: 'account/isLoggedIn', payload: true })
+    dispatchAccount({ type: 'account/firstName', payload: response.user.firstName })
+    dispatchAccount({ type: 'account/lastName', payload: response.user.lastName })
+    dispatchAccount({ type: 'account/email', payload: response.user.email })
+    dispatchAccount({ type: 'account/username', payload: response.user.username })
+    dispatchAccount({ type: 'account/password', payload: response.user.password })
+    dispatchAccount({ type: 'account/accountType', payload: response.user.accountType })
+  }
 
   return (
 
