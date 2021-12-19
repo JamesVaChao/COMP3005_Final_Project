@@ -127,9 +127,7 @@ function OwnerReportPage() {
                 </form>
                 {ownerReportStatusDOM()}
                 <h4>Report Generated: </h4>
-
                 <p>
-                    <br></br>
                     {returnedReportInfo}
 
                 </p>
