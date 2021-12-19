@@ -5,23 +5,21 @@ import './../allStyles.css';
 import { useSelector, useDispatch } from 'react-redux'
 
 
-function StorePage() {
+function BrowsePage() {
     const [bookSearchInfo, setBookSearchInfo] = useState("");
     const [bookSearchStatus, setBookSearchStatus] = useState("");
     const [booksFound, setBooksFound] = useState([])
-    const cartBooks = state => state.books
-    let cartRedux = useSelector(cartBooks);
-    const dispatchCart = useDispatch()
 
-    async function searchForBooks(event) {
+
+    async function getAllBooks(event) {
         event.preventDefault()
         let body = {
             "bookSearchInfo": bookSearchInfo,
         }
-        serverInfo.callServer("POST", "searchForBooks", body, (response) => {
+        serverInfo.callServer("POST", "getAllBooks", body, (response) => {
             if (response.type === "success") {
                 if (response.booksFound && response.booksFound.length > 0) {
-                    setBookSearchStatus("Search successful")
+                    setBookSearchStatus("Browse successful")
                     setBooksFound(response.booksFound)
                 }
                 else if (response.booksFound.length === 0) {
@@ -29,14 +27,14 @@ function StorePage() {
                 }
             }
             else {
-                setBookSearchStatus("search result unsucessful: " + response.msg)
+                setBookSearchStatus("Browse result unsucessful: " + response.msg)
             }
         });
 
     }
 
     function bookSearchStatusDOM() {
-        if (bookSearchStatus === "Search successful") {
+        if (bookSearchStatus === "Browse successful") {
             return (
 
                 <p style={{ color: "green" }}>
@@ -57,33 +55,13 @@ function StorePage() {
     return (
         <>
             <main>
-                <h2>Store/Search Page</h2>
+                <h2>Store/Browse Page</h2>
                 <nav>
                     <Link to="/">Home</Link>
                     <br />
 
                 </nav>
-                <form>
-                    <label>
-                        <input
-                            name="bookSearchInfo"
-                            type="text"
-                            value={bookSearchInfo}
-                            placeholder="search for a book here..."
-                            onChange={e => setBookSearchInfo(e.target.value)}
 
-                        />
-                    </label>
-
-                    <br />
-                    <label>
-
-                        <input type="submit" value="search" onClick={searchForBooks} />
-                        <Link to="/cartPage"><button>Go to Cart ({cartRedux.bookListCart.length})</button></Link>
-
-                    </label>
-
-                </form>
                 {bookSearchStatusDOM()}
 
                 <p>
@@ -131,4 +109,4 @@ function StorePage() {
         </>
     );
 }
-export default StorePage
+export default BrowsePage

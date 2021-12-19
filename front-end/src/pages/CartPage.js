@@ -34,11 +34,12 @@ function CartPage() {
         setIsCartLoaded(true)
     }
 
-    function deleteCart(event, item) {
+    function deleteCart(event, item, index) {
         event.preventDefault()
-        let newCartList = cartList.filter(cartItem => cartItem !== item)
+        let newList = cartList.slice()
+        newList.splice(index, 1)
 
-        setCartList(newCartList);
+        setCartList(newList);
     }
 
     async function searchForBooks(event) {
@@ -87,85 +88,20 @@ function CartPage() {
     return (
         <>
             <main>
-                <h2>Store Page</h2>
+                <h2>Cart Page</h2>
                 <nav>
                     <Link to="/">Home</Link>
-                </nav>
-                <form>
-                    <label>
-                        <input
-                            name="bookSearchInfo"
-                            type="text"
-                            value={bookSearchInfo}
-                            placeholder="search for a book here..."
-                            onChange={e => setBookSearchInfo(e.target.value)}
-
-                        />
-                    </label>
-
-                    <br />
-                    <label>
-
-                        <input type="submit" value="search" onClick={searchForBooks} />
-
-                    </label>
-
-                </form>
-                <p>
-                    {bookSearchStatusDOM()}
                     <br></br>
-                    Books:
+                    <Link to="/storepage">Store Page</Link>
 
-                </p>
-                {
-
-                    booksFound.map((item, index) => {
-                        return (
-                            <div className="card" key={index}>
-                                <img className="card-image" src={item.img_url} alt="Lamp" />
-
-
-                                <div className="container">
-                                    <button className="addToCartButton" onClick={(e) => addToCart(e, item)}> Add to Cart</button>
-
-                                    <h4><b>{item.name}</b></h4>
-                                    <p>
-                                        Book Status: {item.book_status.toUpperCase()} <br />
-                                        Price: ${item.price}<br />
-                                        Genre: {item.genre.map((genre, index) => {
-                                            if (index < item.genre.length - 1) {
-                                                return genre + ", "
-                                            }
-                                            else {
-                                                return genre + " "
-                                            }
-                                        })}
-                                        <br />
-
-                                        Number Of Pages: {item.number_of_pages}
-                                        <br />
-
-                                        Publisher: {item.publisher}
-                                        <br />
-
-                                        Book ID: {item.book_id}
-
-                                    </p>
-
-
-                                </div>
-                            </div>
-
-                        )
-                    })
-                }
-
+                </nav>
+               
                 Cart:
                 <nav>
                     <Link to="/checkoutpage">
                         <button>
 
-                            Check out
+                            Check out ({cartList.length})
 
                         </button>
                     </Link>
@@ -179,7 +115,7 @@ function CartPage() {
 
 
                                 <div className="container">
-                                    <button className="deleteFromCartButton" onClick={(e) => deleteCart(e, item)}> Delete From Cart</button>
+                                    <button className="deleteFromCartButton" onClick={(e) => deleteCart(e, item, index)}> Delete From Cart</button>
 
                                     <h4><b>{item.name}</b></h4>
                                     <p>

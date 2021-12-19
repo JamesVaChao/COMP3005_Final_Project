@@ -3,30 +3,55 @@ import React, { useState, useEffect } from 'react';
 import serverInfo from '../Common/ServerInfo.js';
 import './../allStyles.css';
 import { useSelector, useDispatch } from 'react-redux'
+import { Navigate } from 'react-router'
 
 function CheckOutPage() {
     let [isCartLoaded, setIsCartLoaded] = useState(false);
     let [cartList, setCartList] = useState([]);
-    let [userStreetNumber, setUserStreetNumber] = useState("");
-    let [userStreetName, setUserStreetName] = useState("");
-    let [userPostalCode, setUserPostalCode] = useState("");
-    let [userCity, setUserCity] = useState("");
-    let [userProvience, setUserProvience] = useState("");
-    let [userCountry, setUserCountry] = useState("");
     let [checkoutStatus, setCheckoutStatus] = useState("");
+
+    let [creditCardNumber, setCreditCardNumber] = useState("");
+
+
+    let [billingStreetNumber, setBillingStreetNumber] = useState("");
+    let [billingStreetName, setBillingStreetName] = useState("");
+    let [billingPostalCode, setBillingPostalCode] = useState("");
+    let [billingCity, setBillingCity] = useState("");
+    let [billingProvience, setBillingProvience] = useState("");
+    let [billingCountry, setBillingCountry] = useState("");
+
+    let [shippingStreetNumber, setShippingStreetNumber] = useState("");
+    let [shippingStreetName, setShippingStreetName] = useState("");
+    let [shippingPostalCode, setShippingPostalCode] = useState("");
+    let [shippingCity, setShippingCity] = useState("");
+    let [shippingProvience, setShippingProvience] = useState("");
+    let [shippingCountry, setShippingCountry] = useState("");
+
 
 
     const cartBooks = state => state.books
     let cartRedux = useSelector(cartBooks);
     const dispatchCart = useDispatch()
 
-    function quickAutoFill(){
-        setUserStreetNumber("234")
-        setUserStreetName("Apple Street")
-        setUserPostalCode("K2G 4P2")
-        setUserCity("Ottawa")
-        setUserProvience("Ontario")
-        setUserCountry("Canada")
+    function quickAutoFill(event) {
+        if (event) {
+            event.preventDefault()
+        }
+        setBillingStreetNumber("234")
+        setBillingStreetName("Apple Street")
+        setBillingPostalCode("60007")
+        setBillingCity("Chicago")
+        setBillingProvience("Illinois")
+        setBillingCountry("USA")
+
+        setShippingStreetNumber("567")
+        setShippingStreetName("Shipping Street")
+        setShippingPostalCode("K2G 4P2")
+        setShippingCity("Ottawa")
+        setShippingProvience("Ontario")
+        setShippingCountry("Canada")
+
+        setCreditCardNumber("3243-1231-1234")
     }
 
     useEffect(() => {
@@ -45,12 +70,24 @@ function CheckOutPage() {
         event.preventDefault()
         let body = {
             "cartList": cartList,
-            "userStreetNumber" : userStreetNumber,
-            "userStreetName" : userStreetName,
-            "userPostalCode" : userPostalCode,
-            "userCity" : userCity,
-            "userProvience" : userProvience,
-            "userCountry" : userCountry
+            "billingAddress": {
+                "streetNumber": billingStreetNumber,
+                "streetName": billingStreetName,
+                "postalCode": billingPostalCode,
+                "city": billingCity,
+                "provience": billingProvience,
+                "country": billingCountry
+            },
+            "shippingAddress": {
+                "streetNumber": shippingStreetNumber,
+                "streetName": shippingStreetName,
+                "postalCode": shippingPostalCode,
+                "city": shippingCity,
+                "provience": shippingProvience,
+                "country": shippingCountry
+            },
+            "creditCardNumber" : creditCardNumber
+
         }
         serverInfo.callServer("POST", "checkout", body, (response) => {
             if (response.type === "success") {
@@ -83,89 +120,159 @@ function CheckOutPage() {
         <>
 
             <main>
+            {checkoutStatus === "Checkout successful" ? (
+                <Navigate to="/orderpage" />
+            ) : (
+                <></>
+            )
+            }
+
                 <h2>Checkout Page</h2>
                 <nav>
                     <Link to="/">Home</Link>
                 </nav>
 
                 <nav>
-                    <Link to="/storepage">
-                        <button>
-                            Go back to store
-                        </button>
-                    </Link>
-                    <Link to="/cartpage">
-                        <button>
-                            Go back to cart
-                        </button>
-                    </Link>
+                    <Link to="/storepage">Store Page</Link>
+                    <br></br>
+                    <Link to="/cartpage">Cart Page</Link>
                 </nav>
-                <button onClick={quickAutoFill}> developer quick autofill</button>
                 {checkoutStatusDOM()}
 
                 <form>
+                <h4>Billing Address: </h4>
+
                     <label>
                         <input
                             name="Street Number"
                             type="text"
-                            value={userStreetNumber}
+                            value={billingStreetNumber}
                             placeholder="Street Number"
-                            onChange={e => setUserStreetNumber(e.target.value)}
+                            onChange={e => setBillingStreetNumber(e.target.value)}
                         />
                     </label>
                     <label>
                         <input
                             name="Street Name"
                             type="text"
-                            value={userStreetName}
+                            value={billingStreetName}
                             placeholder="Street Name"
-                            onChange={e => setUserStreetName(e.target.value)}
+                            onChange={e => setBillingStreetName(e.target.value)}
                         />
                     </label>
                     <label>
                         <input
                             name="Postal Code"
                             type="text"
-                            value={userPostalCode}
+                            value={billingPostalCode}
                             placeholder="Postal Code"
-                            onChange={e => setUserPostalCode(e.target.value)}
+                            onChange={e => setBillingPostalCode(e.target.value)}
                         />
                     </label>
                     <label>
                         <input
                             name="City"
                             type="text"
-                            value={userCity}
+                            value={billingCity}
                             placeholder="City"
-                            onChange={e => setUserCity(e.target.value)}
+                            onChange={e => setBillingCity(e.target.value)}
                         />
                     </label>
                     <label>
                         <input
                             name="Provience"
                             type="text"
-                            value={userProvience}
+                            value={billingProvience}
                             placeholder="Provience"
-                            onChange={e => setUserProvience(e.target.value)}
+                            onChange={e => setBillingProvience(e.target.value)}
                         />
                     </label>
                     <label>
                         <input
                             name="Country"
                             type="text"
-                            value={userCountry}
+                            value={billingCountry}
                             placeholder="Country"
-                            onChange={e => setUserCountry(e.target.value)}
+                            onChange={e => setBillingCountry(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            name="Credit Card Number"
+                            type="text"
+                            value={creditCardNumber}
+                            placeholder="Credit Card Number"
+                            onChange={e => setCreditCardNumber(e.target.value)}
+                        />
+                    </label>
+                    <br />
+
+                    <h4>Shipping Address: </h4>
+
+                    <label>
+                        <input
+                            name="Street Number"
+                            type="text"
+                            value={shippingStreetNumber}
+                            placeholder="Street Number"
+                            onChange={e => setShippingStreetNumber(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            name="Street Name"
+                            type="text"
+                            value={shippingStreetName}
+                            placeholder="Street Name"
+                            onChange={e => setShippingStreetName(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            name="Postal Code"
+                            type="text"
+                            value={shippingPostalCode}
+                            placeholder="Postal Code"
+                            onChange={e => setShippingPostalCode(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            name="City"
+                            type="text"
+                            value={shippingCity}
+                            placeholder="City"
+                            onChange={e => setShippingCity(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            name="Provience"
+                            type="text"
+                            value={shippingProvience}
+                            placeholder="Provience"
+                            onChange={e => setShippingProvience(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <input
+                            name="Country"
+                            type="text"
+                            value={shippingCountry}
+                            placeholder="Country"
+                            onChange={e => setShippingCountry(e.target.value)}
                         />
                     </label>
                     <br />
                     <label>
-                
-                <input type="submit" value="checkout" onClick={checkout}/>
 
-        </label>
+                        <button type="submit" onClick={checkout}>Checkout ({cartList.length}) items</button>
+                        <button onClick={quickAutoFill}>Autofill for testing/demo</button>
+
+                    </label>
 
                 </form>
+
 
                 Cart:
 

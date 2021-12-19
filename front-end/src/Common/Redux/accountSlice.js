@@ -7,7 +7,7 @@ const initialState = {
     username : "JamesUserID",
     passwordHash : "",
     loginMethod: "",
-    accountType: "owner"
+    accountType: "Guest"
 
 }
 

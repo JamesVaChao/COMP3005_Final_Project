@@ -1,8 +1,5 @@
 const initialState = {
     bookListCart : [],
-    bookListHistory : [],
-    shouldRetrieveFromCache: true,
-    hasRetrievedFromCache : false,
     availableBooksId : 0,
     getAvailableBooksId : function () { 
       return this.availableBooksId++;
@@ -11,7 +8,6 @@ const initialState = {
 
 /*
 {type: "books/bookListCart", payload: object}
-{type: "books/bookListHistory", payload: object}
 {type: "books/bookListCart/delete", payload: books.storageId}
 */
 
@@ -66,12 +62,7 @@ export default function booksSlice(state = initialState, action) {
           bookListHistory : []
       }
       }
-      case 'books/hasRetrievedFromCache': {
-        return {
-          ...state,
-          hasRetrievedFromCache: true
-        }
-      }
+
       case 'books/availableBooksId/update': {
         return {
           ...state,

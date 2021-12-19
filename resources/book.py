@@ -6,7 +6,7 @@ import json
 
 class Book:
 
-    def __init__(self, book_id = -1, name = "No Name", book_status = "No Status", author = "No Author", genre=[], publisher= "No Publisher", number_of_pages= -1, price=-1, sales_percent_to_publisher=-1, img_url = ""):
+    def __init__(self, book_id = -1, name = "No Name", book_status = "No Status", author = "No Author", genre=[], publisher= "No Publisher", number_of_pages= -1, price=-1, sales_percent_to_publisher=-1, img_url = "", restock_threshold = 10, quantity_stocked = 15):
         self.book_id = book_id
         self.name = name
         self.book_status = book_status
@@ -17,6 +17,8 @@ class Book:
         self.price = price
         self.sales_percent_to_publisher = sales_percent_to_publisher
         self.img_url = img_url
+        self.restock_threshold = restock_threshold
+        self.quantity_stocked = quantity_stocked
 
     @classmethod
     def fromDict(cls, data):
@@ -31,6 +33,8 @@ class Book:
         book.price=data["price"]
         book.sales_percent_to_publisher=data["sales_percent_to_publisher"]
         book.img_url=data["img_url"]
+        book.restock_threshold=data["restock_threshold"]
+        book.quantity_stocked=data["quantity_stocked"]
 
         return book
     def toDict(self):

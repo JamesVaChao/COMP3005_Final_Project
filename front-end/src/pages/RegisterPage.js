@@ -164,7 +164,7 @@ const RegisterScreen = () => {
 
         </label>
       </form>
-      <button onClick={devFastRegister}> dev fast register</button>
+      <button onClick={devFastRegister}>Autofill for testing/demo</button>
 
       <p style={{ color: "red" }}>
         {loginResult}

@@ -14,30 +14,27 @@ function HomePage() {
           <p>Account Type: {accountRedux.accountType}</p>
         </main>
         <nav>
-          <Link to="/devpage">devpage</Link>
+        <br/>
+          <Link to="/registerpage">Register Account Page</Link>
           <br/>
-          <Link to="/loginpage">loginpage</Link>
+          <Link to="/loginpage">Login Page</Link>
           <br/>
-          <Link to="/storepage">storepage</Link>
+          <Link to="/storepage">Store/Search Page</Link>
           <br/>
-          <Link to="/cartpage">cartpage</Link>
+          <Link to="/cartpage">Cart Page</Link>
           <br/>
-          <Link to="/checkoutpage">checkoutpage</Link>          
+          <Link to="/checkoutpage">Checkout Page</Link>          
           <br/>
-          <Link to="/orderpage">orderpage</Link>
-          <br/>
-          <Link to="/registerpage">registerpage</Link>
-          
+          <Link to="/orderpage">Orders Page</Link>
+  
           {
             (accountRedux.accountType === 'owner') ? 
             (
             <>
             <br></br>
-            <Link to="/OwnerBookCollectionPage">owner collection page</Link>
+            <Link to="/OwnerBookCollectionPage">Owner Book Collection Page</Link>
             <br></br>
-            <Link to="/ownerPublisherPage">owner publisher page</Link>            
-            <br></br>
-            <Link to="/ownerDatapage">owner data page</Link>
+            <Link to="/OwnerReportPage">Owner Report Page</Link>
             </>
             ) 
             : <></>

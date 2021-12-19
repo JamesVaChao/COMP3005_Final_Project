@@ -29,8 +29,15 @@ function OrderPage() {
         serverInfo.callServer("POST", "getOrderList", body, (response) => {
             if (response.type === "success") {
                 var serverOrderList = JSON.parse(response.orderList)
-                setOrderList(serverOrderList)
-                setGetOrderStatus("Get order successful")
+                debugger;
+
+                if(serverOrderList != null){
+                    setOrderList(serverOrderList)
+                    setGetOrderStatus("Get order successful")
+                }
+                else {
+                    setGetOrderStatus("Get order result unsucessful: " + response.msg)
+                }
             }
             else {
                 setGetOrderStatus("Get order result unsucessful: " + response.msg)
@@ -66,17 +73,14 @@ function OrderPage() {
 
                 <nav>
                     <Link to="/storepage">
-                        <button>
-                            Go back to store
-                        </button>
+                            Store Page
                     </Link>
+                    <br></br>
                     <Link to="/cartpage">
-                        <button>
-                            Go back to cart
-                        </button>
+                            Cart Page
                     </Link>
                 </nav>
-                <button onClick={(e)=>getOrderList(e)}> developer get order status</button>
+                <button onClick={(e)=>getOrderList(e)}>Dev Refresh Order Page</button>
                 {getOrderStatusDOM()}
 
              
@@ -104,14 +108,7 @@ function OrderPage() {
                                         <h4><b>{book.name}</b></h4>
                                         <p>
 
-                                            Genre: {book.genre.map((genre, index) => {
-                                                if (index < book.genre.length - 1) {
-                                                    return genre + ", "
-                                                }
-                                                else {
-                                                    return genre + " "
-                                                }
-                                            })}
+                                            Genre: {book.genre}
                                             <br />
     
                                             Number Of Pages: {book.number_of_pages}

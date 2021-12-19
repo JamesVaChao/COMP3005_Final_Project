@@ -45,8 +45,8 @@ def searchForBook():
         req_json= request.get_json()
         req_json= request.json
         bookSearchInfo = req_json.get('bookSearchInfo')
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  ["Fantasy", "Adventure", "Fiction"], "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  ["Sci-fi", "Action", "Fiction"], "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
+        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
+        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
         
         responseData={}
@@ -88,11 +88,19 @@ def login():
         responseData['type']= "failure"
         responseData['msg']=""
         
-        #Should check if password + username valid here...
+        #TODO Should check if password + username is in database here...
 
-        # minic successful login for now
-        user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
-        #user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
+        #TODO Change responseData['msg'] if not found
+
+        #If a special type of user then we can ignore this:
+        if(username == "jamesUsername-UserAccount"):
+            user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
+        if(username == "jamesUsername-OwnerAccount"):
+            user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
+        else:
+            # minic successful login regardless of input for now
+            user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
+            #user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
 
         responseData['user']= user.toDict()
         responseData['type']="success"
@@ -100,31 +108,11 @@ def login():
 
         return Response(json.dumps(responseData), status=201, mimetype='application/json')
 
-
-        if user == None:
-            responseData['msg']="email does not exist in database, please register"
-            return Response(json.dumps(responseData), status=201, mimetype='application/json')
-        if(user.checkPasword(password) == False):
-            responseData['msg']="password is wrong, if you logged in via google, please click the right button"
-            return Response(json.dumps(responseData), status=201, mimetype='application/json')
-     
-        if user != None and user.checkPasword(password):
-            responseData['user']=user.__dict__
-            responseData['type']="success"
-            responseData['msg']="sign in via email + password"
-        return Response(json.dumps(responseData), status=201, mimetype='application/json')
-
     except Exception as e:
-        return responseError(e, "Unable to read JSON data" ).response
+        return responseError(e, "Login Failed" ).response
 
 @app.route('/register', methods=['POST'])
 def register():
-    """
-    register() :
-        username : string id used to update database
-        password : password entered by user
-        
-    """
     try:
         print("In register")
         req_json= request.get_json()
@@ -144,7 +132,7 @@ def register():
 
         user = User(username, firstName, lastName, password, email, accountType)
 
-        #Add to DB and check if its valid here...
+        #TODO Add to DB and check if its valid here...
 
         # minic successful register
         responseData['user']= user.toDict()
@@ -170,6 +158,7 @@ def checkout():
         cartList = req_json.get('cartList')
         billingAddress = req_json.get('billingAddress')
         shippingAddress = req_json.get('shippingAddress')
+        creditCardNumber = req_json.get('creditCardNumber')
 
         billingAddressObj = Address.fromDict(billingAddress)
         shippingAddressObj = Address.fromDict(shippingAddress)
@@ -245,8 +234,8 @@ def getOrderList():
         responseData['msg']=""
         
         # minic successful checkout
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  ["Fantasy", "Adventure", "Fiction"], "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  ["Sci-fi", "Action", "Fiction"], "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
+        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
+        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
         bookJSONData = json.dumps(book1.toJson(), indent=4)
         print(bookJSONData)
@@ -292,8 +281,8 @@ def getOwnerBookCollection():
         #TODO sql get collection and set it as return
 
         # minic successful addToOwnerBookCollection
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  ["Fantasy", "Adventure", "Fiction"], "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  ["Sci-fi", "Action", "Fiction"], "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
+        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
+        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
         collectionBook = [book1, book2]
         collectionBookJSONData = json.dumps(collectionBook, default = serialize, indent=4)
@@ -324,6 +313,8 @@ def addToOwnerBookCollection():
 
         #sql add to collection
 
+        #TODO genre will be 
+
         #setup return
         responseData={}
         responseData['ownerBookCollection']= []
@@ -332,9 +323,8 @@ def addToOwnerBookCollection():
         
         #sql get collection
         # minic successful addToOwnerBookCollection
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  ["Fantasy", "Adventure", "Fiction"], "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  ["Sci-fi", "Action", "Fiction"], "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
-
+        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
+        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
 
         collectionBook = [book1, book2, bookObj]
@@ -376,8 +366,8 @@ def removeFromOwnerBookCollection():
         #TODO sql get collection and set return
 
         # minic successful removeFromOwnerBookCollection
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  ["Fantasy", "Adventure", "Fiction"], "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  ["Sci-fi", "Action", "Fiction"], "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
+        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
+        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
         collectionBook = [book1]
         collectionBookJSONData = json.dumps(collectionBook, default = serialize, indent=4)
@@ -529,6 +519,50 @@ def removePublisher():
     except Exception as e:
         return responseError(e, "Error: " + str(e)).response
 
+@app.route('/getReport', methods=['POST'])
+def getReport():
+    try:
+        print("In getReport")
+        req_json= request.get_json()
+        req_json= request.json
+        username = req_json.get('reportType')
+        startDate = req_json.get('startDate')
+        endDate = req_json.get('endDate')
+
+        #TODO based on report type run certain query with start and end dates
+        #https://www.toolbox.com/tech/programming/question/selecting-between-two-dates-within-a-datetime-field-sql-server-120904/
+        """
+        Possible reportType:
+            "Total_Sales"
+            "Sales_per_Author"
+            "Sales_per_Book"
+            "Sales_per_Publisher" 
+            "Sales_per_Genre"
+                
+        Date format:
+            "YYYY-MM-DD"
+            Ex default start date. "2020-01-01"
+            Ex default end date. "2021-12-30"
+        """
+
+        #setup return
+        responseData={}
+        responseData['returnedReportInfo']= ""
+        responseData['type']= "failure"
+        responseData['msg']=""
+        
+        #TODO sql get info and set return
+
+        # minic successful getReport
+       
+        returnedReportInfo = "Total Sales {}\nBetween {} and {}".format("$300",startDate, endDate)
+        responseData['returnedReportInfo'] = returnedReportInfo
+        responseData['type']="success"
+        responseData['msg']="getReport successful"
+
+        return Response(json.dumps(responseData), status=201, mimetype='application/json')
+    except Exception as e:
+        return responseError(e, "Error: " + str(e)).response
 
 if __name__ == '__main__':
     #ip = '192.168.1.9'  # change ip to individual ip. found using ipconfig. #used for talking between web and server
