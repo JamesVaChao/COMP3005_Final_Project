@@ -20,13 +20,13 @@ create table publisher
     foreign key (address_id) references address
     );
 
-create table user
-    (user_id            varchar(5),
+create table b_user
+    (b_user_id            varchar(5),
     email_address       varchar(255),
     name                varchar(50) not null,
     password            varchar(20) not null,
-    account_type        varchar(5) check (account_type in ('admin', 'user')),
-    primary key(user_id)
+    account_type        varchar(5) check (account_type in ('admin', 'b_user')),
+    primary key(b_user_id)
     );
 
 create table book
@@ -39,39 +39,39 @@ create table book
     sales_percent_to_publisher  numeric(3, 2) check (sales_percent_to_publisher >= 0 and sales_percent_to_publisher <= 1),
     img_url                     varchar(255),
     restock_threshold           numeric(3, 0) check (restock_threshold >= 0),
-    quantity_stocked            numeric(4, 0) check (quanitity_stock >= 0),
-    quantity_reserved           numeric(4, 0) check (quanitty_reserved >= 0),
+    quantity_stocked            numeric(4, 0) check (quantity_stocked >= 0),
+    quantity_reserved           numeric(4, 0) check (quantity_reserved >= 0),
     publisher_name              varchar(50),
     primary key (ISBN),
     foreign key (publisher_name) references publisher
     );
 
-create table order
-    (order_number   varchar(8)
+create table b_order
+    (b_order_number   varchar(8),
     cost            numeric(10, 2) check (cost > 0),
-    status          varchar(10) check (status) in ('in_transit', 'warehouse', 'delivered'),
+    status          varchar(10) check (status in ('in_transit', 'warehouse', 'delivered')),
     date            varchar(8),
-    user_id         varchar(5),
+    b_user_id         varchar(5),
     address_id      varchar(5),
-    primary key (order_number),
-    foreign key (user_id) references user,
+    primary key (b_order_number),
+    foreign key (b_user_id) references b_user,
     foreign key (address_id) references address
     );
 
-create table in_order
-    (order_number   varchar(8),
+create table in_b_order
+    (b_order_number   varchar(8),
     ISBN            varchar(13),
-    number          varchar(3, 0) check (number > 0),
-    primary key (order_number, ISBN),
-    foreign key (order_number) references order,
+    number          numeric(3, 0) check (number > 0),
+    primary key (b_order_number, ISBN),
+    foreign key (b_order_number) references b_order,
     foreign key (ISBN) references book
     );
 
 create table bill_to
-    (order_number       varchar(8),
+    (b_order_number       varchar(8),
     credit_card_number  varchar(16),
     address_id          varchar(5),
-    primary key (order_number),
-    foreign key (order_number) references order,
+    primary key (b_order_number),
+    foreign key (b_order_number) references b_order,
     foreign key (address_id) references address
     );
