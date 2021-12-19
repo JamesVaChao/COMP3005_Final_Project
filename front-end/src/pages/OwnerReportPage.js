@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import serverInfo from '../Common/ServerInfo.js';
 import './../allStyles.css';
-import { useSelector, useDispatch } from 'react-redux'
 
 
 function OwnerReportPage() {
     const [ownerReportStatus, setOwnerReportStatus] = useState("");
 
-    let [reportType, setReportType] = useState("");
+    let [reportType, setReportType] = useState("Total_Sales");
     let [startDate, setStartDate] = useState("2020-01-01");
     let [endDate, setEndDate] = useState(["2021-12-30"]);
 

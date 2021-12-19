@@ -12,6 +12,7 @@ import OrderPage from "./pages/OrderPage";
 import RegisterPage from "./pages/RegisterPage";
 import OwnerBookCollectionPage from "./pages/OwnerBookCollectionPage";
 import OwnerReportPage from "./pages/OwnerReportPage";
+import BrowsePage from "./pages/BrowsePage";
 
 export const App = ()=> {
   return (
@@ -25,6 +26,8 @@ export const App = ()=> {
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/loginpage" element={<LoginPage />} />
         <Route path="/storepage" element={<StorePage />} />
+        <Route path="/BrowsePage" element={<BrowsePage />} />
+
         <Route path="/cartpage" element={<CartPage />} />
         <Route path="/checkoutpage" element={<CheckOutPage />} />
         <Route path="/orderpage" element={<OrderPage />} />

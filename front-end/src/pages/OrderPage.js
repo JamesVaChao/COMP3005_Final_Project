@@ -24,7 +24,7 @@ function OrderPage() {
         event.preventDefault()
         }
         let body = {
-            "userID" : accountRedux.userID
+            "username" : accountRedux.username
         }
         serverInfo.callServer("POST", "getOrderList", body, (response) => {
             if (response.type === "success") {

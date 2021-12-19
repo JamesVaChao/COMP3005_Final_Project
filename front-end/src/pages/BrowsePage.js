@@ -2,29 +2,29 @@ import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import serverInfo from '../Common/ServerInfo.js';
 import './../allStyles.css';
-import { useSelector, useDispatch } from 'react-redux'
 
 
 function BrowsePage() {
-    const [bookSearchInfo, setBookSearchInfo] = useState("");
     const [bookSearchStatus, setBookSearchStatus] = useState("");
-    const [booksFound, setBooksFound] = useState([])
+    const [bookList, setBookList] = useState([])
+    let [isBookListLoaded, setIsBookListLoaded] = useState(false);
 
+    if (!isBookListLoaded) {
+        getAllBooks()
+        setIsBookListLoaded(true)
+
+    }
 
     async function getAllBooks(event) {
+        if(event){
         event.preventDefault()
+        }
         let body = {
-            "bookSearchInfo": bookSearchInfo,
         }
         serverInfo.callServer("POST", "getAllBooks", body, (response) => {
             if (response.type === "success") {
-                if (response.booksFound && response.booksFound.length > 0) {
-                    setBookSearchStatus("Browse successful")
-                    setBooksFound(response.booksFound)
-                }
-                else if (response.booksFound.length === 0) {
-                    setBookSearchStatus("No books found")
-                }
+                setBookSearchStatus("Browse successful")
+                setBookList(response.bookList)
             }
             else {
                 setBookSearchStatus("Browse result unsucessful: " + response.msg)
@@ -49,9 +49,7 @@ function BrowsePage() {
             </p>
         )
     }
-    function addToCart(e, book) {
-        dispatchCart({ type: 'books/bookListCart/add', payload: book })
-    }
+
     return (
         <>
             <main>
@@ -59,7 +57,8 @@ function BrowsePage() {
                 <nav>
                     <Link to="/">Home</Link>
                     <br />
-
+                    <Link to="/storepage">Store/Search Page</Link>
+                    <br />
                 </nav>
 
                 {bookSearchStatusDOM()}
@@ -71,14 +70,13 @@ function BrowsePage() {
                 </p>
                 {
 
-                    booksFound.map((item, index) => {
+                    bookList.map((item, index) => {
                         return (
                             <div className="card" key={index}>
                                 <img className="card-image" src={item.img_url} alt="Lamp" />
 
 
                                 <div className="container">
-                                    <button className="addToCartButton" onClick={(e) => addToCart(e, item)}> Add to Cart</button>
 
                                     <h4><b>{item.name}</b></h4>
                                     <p>

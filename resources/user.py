@@ -61,23 +61,6 @@ class User:
         user.updateSelf()
         return user
 
-    # Used when instantiating user from database.
-    #   userID : string
-    @classmethod
-    def fromDatabase(cls, userID):
-        try:
-            if userID:
-                #user = FirebaseDBSingleton.getInstance().usersCollection.document(userID).get()
-                pass
-                #if(user.exists):
-                #    return cls.fromDict(user._data)
-            print(f"User does not exists")
-            return None
-        except Exception as e:
-            print(e)
-            print(f"An Error Occured retrieving user")
-            return None
-
     def checkPasword(self, password):
         return self.passwordHash == hashlib.sha512(password.encode('utf-8')).hexdigest()
 

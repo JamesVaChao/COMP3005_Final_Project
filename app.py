@@ -45,20 +45,53 @@ def searchForBook():
         req_json= request.get_json()
         req_json= request.json
         bookSearchInfo = req_json.get('bookSearchInfo')
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
+        searchType = req_json.get('searchType')
 
-        
+        #TODO search based on given query
+
         responseData={}
         responseData['booksFound']= {}
         responseData['type']= "failure"
         responseData['msg']=""
         
         # minic successful search, replace with sql queries
+        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
+        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
         responseData['booksFound']= [book1.toDict(), book2.toDict()]
         responseData['type']="success"
         responseData['msg']="search completed"
+
+        return Response(json.dumps(responseData), status=201, mimetype='application/json')
+
+
+
+    except Exception as e:
+        return responseError(e, "Unable to read JSON data" ).response
+
+ 
+@app.route('/getAllBooks', methods=['POST'])
+def getAllBooks():
+    try:
+        print("In getAllBooks for books")
+        req_json= request.get_json()
+        req_json= request.json
+       
+       
+
+        
+        responseData={}
+        responseData['bookList']= {}
+        responseData['type']= "failure"
+        responseData['msg']=""
+        
+        # minic successful getAllBooks, replace with sql queries
+        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
+        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
+
+        responseData['bookList']= [book1.toDict(), book2.toDict()]
+        responseData['type']="success"
+        responseData['msg']="getAllBooks completed"
 
         return Response(json.dumps(responseData), status=201, mimetype='application/json')
 

@@ -9,6 +9,8 @@ function StorePage() {
     const [bookSearchInfo, setBookSearchInfo] = useState("");
     const [bookSearchStatus, setBookSearchStatus] = useState("");
     const [booksFound, setBooksFound] = useState([])
+    const [searchType, setSearchType] = useState("All")
+
     const cartBooks = state => state.books
     let cartRedux = useSelector(cartBooks);
     const dispatchCart = useDispatch()
@@ -17,16 +19,18 @@ function StorePage() {
         event.preventDefault()
         let body = {
             "bookSearchInfo": bookSearchInfo,
+            "searchType" : searchType,
         }
         serverInfo.callServer("POST", "searchForBooks", body, (response) => {
             if (response.type === "success") {
                 if (response.booksFound && response.booksFound.length > 0) {
                     setBookSearchStatus("Search successful")
-                    setBooksFound(response.booksFound)
                 }
                 else if (response.booksFound.length === 0) {
                     setBookSearchStatus("No books found")
                 }
+                setBooksFound(response.booksFound)
+
             }
             else {
                 setBookSearchStatus("search result unsucessful: " + response.msg)
@@ -54,6 +58,34 @@ function StorePage() {
     function addToCart(e, book) {
         dispatchCart({ type: 'books/bookListCart/add', payload: book })
     }
+
+    /*
+    "All"
+    "Author"
+    "Genre"
+    "Name"
+    "ISBN"
+
+    */
+    const searchTypesOptions = [
+        {
+            label: "All",
+            value: "All",
+        },
+        {
+            label: "Name",
+            value: "Name",
+        }, {
+            label: "Author",
+            value: "Author",
+        }, {
+            label: "Genre",
+            value: "Genre",
+        }, {
+            label: "ISBN",
+            value: "ISBN",
+        },
+    ];
     return (
         <>
             <main>
@@ -61,8 +93,15 @@ function StorePage() {
                 <nav>
                     <Link to="/">Home</Link>
                     <br />
-
+                    <Link to="/browsepage">Store/Browse Page</Link>
+                    <br />
                 </nav>
+                <label>Search Type: </label> 
+                <select onChange={(e) => setSearchType(e.target.value)}>
+                        {searchTypesOptions.map((option, index) => (
+                            <option key={index} value={option.value}>{option.label}</option>
+                        ))}
+                    </select>
                 <form>
                     <label>
                         <input

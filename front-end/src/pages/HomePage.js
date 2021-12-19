@@ -21,6 +21,8 @@ function HomePage() {
           <br/>
           <Link to="/storepage">Store/Search Page</Link>
           <br/>
+          <Link to="/browsePage">Store/Browse Page</Link>
+          <br/>
           <Link to="/cartpage">Cart Page</Link>
           <br/>
           <Link to="/checkoutpage">Checkout Page</Link>          

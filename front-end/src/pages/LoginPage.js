@@ -15,10 +15,10 @@ const LoginPage = () => {
       event.preventDefault()
     }
     try {
-      if(accountType == "user"){
+      if(accountType === "user"){
       setUserName("jamesUsername-UserAccount")
       }
-      if(accountType == "owner"){
+      if(accountType === "owner"){
         setUserName("jamesUsername-OwnerAccount")
       }
       setPassword("jamesPassword")

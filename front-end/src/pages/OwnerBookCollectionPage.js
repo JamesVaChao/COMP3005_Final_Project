@@ -156,18 +156,12 @@ function OwnerBookCollectionPage() {
                 <h2>Owner Collection Page</h2>
                 <nav>
                     <Link to="/">Home</Link>
-                    {
-                    (accountRedux.accountType === 'owner') ? 
-                    (
-                    <>
                     <br></br>
+
                     <Link to="/ownerBookCollectionPage">Owner Collection Page</Link>
                     <br></br>
                     <Link to="/ownerReportPage">Owner Report Page</Link>
-                    </>
-                    ) 
-                    : <></>
-                    }
+                    
                 </nav>
                 
                 <form>
@@ -274,10 +268,9 @@ function OwnerBookCollectionPage() {
 
                 </form>
 
+                {ownerRetreiveStatusDOM()}
 
                 <p>
-                    <br></br>
-                    {ownerRetreiveStatusDOM()}
                     Owner Book Collection:
                 </p>
                 {

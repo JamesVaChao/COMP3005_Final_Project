@@ -289,14 +289,7 @@ function CheckOutPage() {
                                     <p>
                                         Book Status: {item.book_status.toUpperCase()} <br />
                                         Price: ${item.price}<br />
-                                        Genre: {item.genre.map((genre, index) => {
-                                            if (index < item.genre.length - 1) {
-                                                return genre + ", "
-                                            }
-                                            else {
-                                                return genre + " "
-                                            }
-                                        })}
+                                        Genre: {item.genre}
                                         <br />
 
                                         Number Of Pages: {item.number_of_pages}
