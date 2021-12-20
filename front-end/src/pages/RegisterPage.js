@@ -160,7 +160,7 @@ const RegisterScreen = () => {
         <br />
         <label>
           
-          <input type="submit" value="login" onClick={register}/>
+          <input type="submit" value="register" onClick={register}/>
 
         </label>
       </form>
