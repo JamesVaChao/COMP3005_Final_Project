@@ -287,7 +287,7 @@ function CheckOutPage() {
                                 <div className="container">
                                     <h4><b>{item.name}</b></h4>
                                     <p>
-                                        Book Status: {item.book_status.toUpperCase()} <br />
+                                        Book Status: {item.book_status} <br />
                                         Price: ${item.price}<br />
                                         Genre: {item.genre}
                                         <br />

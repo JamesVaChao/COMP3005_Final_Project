@@ -4,8 +4,8 @@ create table address
     street_name         varchar(20),
     postal_code         varchar(6),
     city                varchar(20),
-    province            varchar(2),
-    country             varchar(2),
+    province            varchar(25),
+    country             varchar(25),
     primary key (address_id)
     );
 

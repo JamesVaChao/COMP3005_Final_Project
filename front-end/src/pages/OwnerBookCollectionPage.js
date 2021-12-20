@@ -101,7 +101,7 @@ function OwnerBookCollectionPage() {
         setBookId("99999")
         setBookName("The Two Towers")
         setBookAuthor("J. R. R. Tolkien")
-        setBookGenres(["Fantasy", "Fiction"])
+        setBookGenres("Fantasy, Fiction")
         setBookPrice(25.99)
         setBookPublisher("Minas Publishing")
         setBookNumberOfPages(352)
@@ -138,6 +138,7 @@ function OwnerBookCollectionPage() {
         serverInfo.callServer("POST", "addToOwnerBookCollection", body, (response) => {
             if (response.type === "success") {
                 setOwnerRetreiveStatus("Add book successful")
+                debugger;
                 var ownerBookCollection = JSON.parse(response.ownerBookCollection)
 
                 setOwnerBookCollection(ownerBookCollection)
@@ -286,7 +287,7 @@ ownerBookCollection.map((item, index) => {
 
                 <h4><b>{item.name}</b></h4>
                 <p>
-                    Book Status: {item.book_status.toUpperCase()} <br />
+                    Book Status: {item.book_status} <br />
                     Price: ${item.price}<br />
                     Genre: {item.genre}
                     <br />

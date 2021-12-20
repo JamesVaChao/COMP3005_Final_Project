@@ -262,13 +262,8 @@ def checkout():
     except Exception as e:
         return responseError(e, "Unable to read JSON data" ).response
 
-def serialize(obj):
-    """JSON serializer for objects not serializable by default json code"""
 
-    if isinstance(obj, FunctionType):
-        return ""
 
-    return obj.__dict__
 
 @app.route('/getOrderList', methods=['POST'])
 def getOrderList():
@@ -353,18 +348,12 @@ def getOwnerBookCollection():
 
 @app.route('/addToOwnerBookCollection', methods=['POST'])
 def addToOwnerBookCollection():
-
     try:
         print("In addToOwnerBookCollection")
         req_json= request.get_json()
         req_json= request.json
         username = req_json.get('username')
         bookObj = Book.fromDict(req_json.get('book'))
-        #check user is of accounttype owner here via sql
-
-        #sql add to collection
-
-        #TODO genre will be 
 
         #setup return
         responseData={}
@@ -372,15 +361,48 @@ def addToOwnerBookCollection():
         responseData['type']= "failure"
         responseData['msg']=""
         
-        #sql get collection
+
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
+
+        # create a cursor
+        cur = conn.cursor()
+
+	    # execute a statement
+        print('PostgreSQL database version:')
+        cur.execute("select * from book")
+        collectionBook = cur.fetchall()
+
+        cur.execute("insert into book values ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(bookObj.book_id, bookObj.name, bookObj.author,bookObj.genre,bookObj.number_of_pages,bookObj.price,bookObj.sales_percent_to_publisher,bookObj.img_url,bookObj.restock_threshold,bookObj.quantity_stocked,0,bookObj.publisher) )
+        conn.commit()
+
+        # display the PostgreSQL database server version
+
+        cur.execute("select * from book")
+        collectionBookSQL = cur.fetchall()
+
+	    # close the communication with the PostgreSQL
+        cur.close()
+
         # minic successful addToOwnerBookCollection
+        """
         book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
         book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
 
         collectionBook = [book1, book2, bookObj]
+        """
+        collectionBook = []
+
+        for i in range(len(collectionBookSQL)):
+            book = Book(collectionBookSQL[i][0], collectionBookSQL[i][1], "AVAILABLE", collectionBookSQL[i][2], collectionBookSQL[i][3], collectionBookSQL[i][11], collectionBookSQL[i][4], collectionBookSQL[i][5],collectionBookSQL[i][6],collectionBookSQL[i][7],collectionBookSQL[i][8],collectionBookSQL[i][9])
+            collectionBook.append(book)
+
         collectionBookJSONData = json.dumps(collectionBook, default = serialize, indent=4)
-        
         responseData['ownerBookCollection']= collectionBookJSONData
         responseData['type']="success"
         responseData['msg']="addToOwnerBookCollection successful"
@@ -388,6 +410,19 @@ def addToOwnerBookCollection():
         return Response(json.dumps(responseData), status=201, mimetype='application/json')
     except Exception as e:
         return responseError(e, "Error: " + str(e)).response
+
+def serialize(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, FunctionType):
+        return ""
+    print(type(obj))
+    print (type(obj).__name__) 
+    print (str(obj))    
+   
+    if (type(obj).__name__ == "Decimal"):
+        return str(obj)
+    return obj.__dict__
 
 @app.route('/removeFromOwnerBookCollection', methods=['POST'])
 def removeFromOwnerBookCollection():

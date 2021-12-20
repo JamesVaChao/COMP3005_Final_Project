@@ -6,7 +6,7 @@ import json
 
 class Book:
 
-    def __init__(self, book_id = -1, name = "No Name", book_status = "No Status", author = "No Author", genre=[], publisher= "No Publisher", number_of_pages= -1, price=-1, sales_percent_to_publisher=-1, img_url = "", restock_threshold = 10, quantity_stocked = 15):
+    def __init__(self, book_id = -1, name = "No Name", book_status = "No Status", author = "No Author", genre="", publisher= "No Publisher", number_of_pages= -1, price=-1, sales_percent_to_publisher=-1, img_url = "", restock_threshold = 10, quantity_stocked = 15):
         self.book_id = book_id
         self.name = name
         self.book_status = book_status
