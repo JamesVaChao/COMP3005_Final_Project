@@ -1,3 +1,11 @@
+DROP TABLE IF EXISTS b_order CASCADE;
+DROP TABLE IF EXISTS b_user CASCADE;
+DROP TABLE IF EXISTS bill_to CASCADE;
+DROP TABLE IF EXISTS book CASCADE;
+DROP TABLE IF EXISTS in_b_order CASCADE;
+DROP TABLE IF EXISTS publisher CASCADE;
+DROP TABLE IF EXISTS address CASCADE;
+
 create table address
     (address_id         serial,
     street_number       varchar(6),
@@ -21,7 +29,7 @@ create table publisher
     );
 
 create table b_user
-    (b_user_id            varchar(5),
+    (b_user_id            varchar(25),
     email_address       varchar(255),
     name                varchar(50) not null,
     password            varchar(20) not null,
@@ -51,7 +59,7 @@ create table b_order
     cost            numeric(10, 2) check (cost > 0),
     status          varchar(10) check (status in ('in_transit', 'warehouse', 'delivered')),
     date            varchar(8),
-    b_user_id         varchar(5),
+    b_user_id         varchar(25),
     address_id      serial,
     primary key (b_order_number),
     foreign key (b_user_id) references b_user,
@@ -75,3 +83,17 @@ create table bill_to
     foreign key (b_order_number) references b_order,
     foreign key (address_id) references address
     );
+	
+	
+/* Adding default values for demo */
+insert into b_user values ('1', 'test@test.com', 'first last', 'pass', 'user');
+insert into address values (default, '50', 'Street Ave.', 'K1S7H2', 'Ottawa', 'Ontario', 'Canada');
+
+
+insert into address values (default, '234', 'Minas St', 'H3K5P9', 'Kingston', 'Ontario', 'Canada');
+insert into publisher values ('Minas Publishing', 'minas@gmail.com', '534-234-4324', '117463782983', 10, '1');
+insert into publisher values ('Penguin', 'hi@penguin.com', '6135551234', '987463782983', 104987.87, '2');
+
+insert into book values ('1008472647839', '1984', 'George Orwell', 'Fiction', '224', 12.99, 0.20, 'https://images-na.ssl-images-amazon.com/images/I/91SZSW8qSsL.jpg', 10, 100, 0, 'Penguin');
+
+SELECT * FROM address;

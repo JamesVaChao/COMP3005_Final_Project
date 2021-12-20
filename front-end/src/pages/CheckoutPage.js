@@ -66,6 +66,10 @@ function CheckOutPage() {
         setIsCartLoaded(true)
     }
 
+    //Redux
+    const account = state => state.account
+    let accountRedux = useSelector(account);
+
     async function checkout(event) {
         event.preventDefault()
         let body = {
@@ -86,7 +90,8 @@ function CheckOutPage() {
                 "provience": shippingProvience,
                 "country": shippingCountry
             },
-            "creditCardNumber" : creditCardNumber
+            "creditCardNumber" : creditCardNumber,
+            "username" : accountRedux.username
 
         }
         serverInfo.callServer("POST", "checkout", body, (response) => {

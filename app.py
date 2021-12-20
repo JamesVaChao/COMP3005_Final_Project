@@ -7,6 +7,8 @@ from resources.order import Order
 from resources.publisher import Publisher
 import psycopg2
 from resources.user import User
+from datetime import datetime
+
 
 from resources.book import Book
 
@@ -44,7 +46,7 @@ def searchForBook():
         print("In search for books")
         req_json= request.get_json()
         req_json= request.json
-        bookSearchInfo = req_json.get('bookSearchInfo')
+        bookSearchInfo = req_json.get('bookSearchInfo').lower()
         searchType = req_json.get('searchType').lower()
 
         # connect to the PostgreSQL server
@@ -61,9 +63,9 @@ def searchForBook():
 
 	    # execute a statement
         if searchType == "all":
-            cur.execute("select * from book where name like '%%%s%%' or isbn like '%%%s%%' or genre like '%%%s%%' or author like '%%%s%%'" % (bookSearchInfo, bookSearchInfo, bookSearchInfo, bookSearchInfo))
+            cur.execute("select * from book where lower(name) like '%%%s%%' or lower(isbn) like '%%%s%%' or lower(genre) like '%%%s%%' or lower(author) like '%%%s%%'" % (bookSearchInfo, bookSearchInfo, bookSearchInfo, bookSearchInfo))
         else:
-            cur.execute("select * from book where %s like '%%%s%%'" % (searchType, bookSearchInfo))
+            cur.execute("select * from book where lower(%s) like '%%%s%%'" % (searchType, bookSearchInfo))
         result = cur.fetchall()
        
 	    # close the communication with the PostgreSQL
@@ -90,7 +92,7 @@ def searchForBook():
         book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
         book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
-        responseData['booksFound']= [book1.toDict(), book2.toDict()] + books
+        responseData['booksFound']= books
         responseData['type']="success"
         responseData['msg']="search completed"
 
@@ -110,7 +112,36 @@ def getAllBooks():
         req_json= request.json
        
        
+        # connect to the PostgreSQL server
+    
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
 
+        # create a cursor
+        cur = conn.cursor()
+
+	    # execute a statement
+        cur.execute("select * from book")
+        result = cur.fetchall()
+       
+	    # close the communication with the PostgreSQL
+        cur.close()
+
+        
+        books = []
+        for book in result:
+            if (book[9] > 0 and book[9] == book[10]):
+                available = "All copies reserved"
+            elif book[9] == 0:
+                available == "No copies available"
+            else:
+                available = "Available"
+            tmpBook = Book(book[0], book[1], available, book[2], book[3], book[11], float(book[4]), float(book[5]), float(book[6]), book[7])
+            books.append(tmpBook.toDict())
         
         responseData={}
         responseData['bookList']= {}
@@ -121,7 +152,7 @@ def getAllBooks():
         book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
         book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
-        responseData['bookList']= [book1.toDict(), book2.toDict()]
+        responseData['bookList']= books
         responseData['type']="success"
         responseData['msg']="getAllBooks completed"
 
@@ -153,44 +184,41 @@ def login():
         responseData['type']= "failure"
         responseData['msg']=""
         
-        # connect to the PostgreSQL server
-    
-        conn = psycopg2.connect(
-            host="localhost",
-            database="COMP3005",
-            user="postgres",
-            password="james")
-        # do stuff
 
-        # create a cursor
-        cur = conn.cursor()
-
-	    # execute a statement
-        cur.execute("select * from b_user where b_user_id = '%s' and password = '%s' fetch first 1 row only" % (username, password))
-        result = cur.fetchall()[0]
-       
-	    # close the communication with the PostgreSQL
-        cur.close()
-
-        if result:
-            user = User(username, result[2], "", password, result[1], result[4])
-        else:
-            # minic successful login regardless of input for now
-            user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
 
 
 
         #TODO Change responseData['msg'] if not found
 
         #If a special type of user then we can ignore this:
-        #if(username == "jamesUsername-UserAccount"):
-        #    user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
-        #if(username == "jamesUsername-OwnerAccount"):
-        #    user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
-        #else:
-            # minic successful login regardless of input for now
-        #    user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
-            #user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
+        if(username == "jamesUsername-UserAccount"):
+            user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
+        if(username == "jamesUsername-OwnerAccount"):
+            user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
+        else:
+        # connect to the PostgreSQL server
+            conn = psycopg2.connect(
+                host="localhost",
+                database="COMP3005",
+                user="postgres",
+                password="james")
+            # do stuff
+
+            # create a cursor
+            cur = conn.cursor()
+
+            # execute a statement
+            cur.execute("select * from b_user where b_user_id = '%s' and password = '%s' fetch first 1 row only" % (username, password))
+            result = cur.fetchall()[0]
+        
+            # close the communication with the PostgreSQL
+            cur.close()
+
+            if result:
+                user = User(username, result[2], "", password, result[1], result[4])
+            else:
+                # minic successful login regardless of input for now
+                user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
 
         responseData['user']= user.toDict()
         responseData['type']="success"
@@ -267,9 +295,10 @@ def checkout():
         billingAddress = req_json.get('billingAddress')
         shippingAddress = req_json.get('shippingAddress')
         creditCardNumber = req_json.get('creditCardNumber')
+        username = req_json.get('username')
 
-        billingAddressObj = Address.fromDict(billingAddress)
-        shippingAddressObj = Address.fromDict(shippingAddress)
+        bill = Address.fromDict(billingAddress)
+        ship = Address.fromDict(shippingAddress)
 
 
         #TODO sql insert shipping address
@@ -284,13 +313,62 @@ def checkout():
 
         #TODO set orderID to that created
 
+        cost = 0
+        for book in cartList:
+            cost += book["price"]
+        status = "warehouse"
+        date = datetime.today().strftime('%Y%m%d')
+
+
+        # connect to the PostgreSQL server
+    
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
+
+        # create a cursor
+        cur = conn.cursor()
+
+        cur.execute("insert into address values (default, '%s', '%s', '%s', '%s', '%s', '%s') returning address_id" % \
+            (ship.streetNumber, ship.streetName, ship.postalCode.replace(" ", ""), ship.city, ship.provience, ship.country))
+        ship_address_id = cur.fetchone()[0]
+        
+            
+        cur.execute("insert into address values (default, '%s', '%s', '%s', '%s', '%s', '%s') returning address_id" % \
+            (bill.streetNumber, bill.streetName, bill.postalCode, bill.city, bill.provience, bill.country))
+        bill_address_id = cur.fetchone()[0]
+
+	    # execute a statement
+        cur.execute("insert into b_order values (default, '%s', '%s', '%s', '%s', '%s') returning b_order_number" % \
+            (cost, status, date, username, ship_address_id))
+        b_order_number = cur.fetchone()[0]
+        numlist = {}
+        newCartList = []
+        for book in cartList:
+            if book["book_id"] in numlist.keys():
+                numlist[book["book_id"]] += 1
+            else:
+                numlist[book["book_id"]] = 1
+                newCartList.append(book)
+        for book in newCartList:
+            cur.execute("insert into in_b_order values ('%s', '%s', '%s')" % (b_order_number, book["book_id"], numlist[book["book_id"]]))
+            
+        cur.execute("insert into bill_to values (%s, '%s', '%s')" % (b_order_number, creditCardNumber.replace("-", ""), bill_address_id))
+        conn.commit()
+       
+	    # close the communication with the PostgreSQL
+        cur.close()
+
         responseData={}
         responseData['orderID']= {}
         responseData['type']= "failure"
         responseData['msg']=""
         
         # minic successful lcheckout
-        responseData['orderID']= "AX01"
+        responseData['orderID']= b_order_number
         responseData['type']="success"
         responseData['msg']="checkout successful"
 
@@ -330,23 +408,58 @@ def getOrderList():
         req_json= request.json
         username = req_json.get('username')
 
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+
+        cur = conn.cursor()
+
+        cur.execute("select * from b_order")
+        orders = cur.fetchall()
+
+        cur.execute("select * from b_order natural join in_b_order")
+        
+        orderList = []
+        for order in orders:
+            cur.execute("select * from book where isbn in (select isbn from b_order natural join in_b_order where b_order_number = " + str(order[0]) + ")")
+            result_books = cur.fetchall()
+            books = []
+            for book in result_books:
+                if (book[9] > 0 and book[9] == book[10]):
+                    available = "All copies reserved"
+                elif book[9] == 0:
+                    available == "No copies available"
+                else:
+                    available = "Available"
+                tmpBook = Book(book[0], book[1], available, book[2], book[3], book[11], float(book[4]), float(book[5]), float(book[6]), book[7])
+                books.append(tmpBook.toDict())
+            cur.execute("select * from (select * from bill_to natural join address) as bills join b_order on b_order.b_order_number = bills.b_order_number where b_order.b_order_number = " + str(order[0]))
+            bill = cur.fetchall()[0]
+            billing_info = ""
+            for thing in bill:
+                billing_info += str(thing) + " "
+            shipping_info = ""
+            location = order[2]
+            tmpOrder = Order(order[0], books, "", billing_info, shipping_info, location)
+            orderList.append(tmpOrder)
+        
+        cur.close()
         
         responseData={}
         responseData['orderList']= []
         responseData['type']= "failure"
         responseData['msg']=""
-        
-        # minic successful checkout
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
-        bookJSONData = json.dumps(book1.toJson(), indent=4)
-        print(bookJSONData)
 
-        print ("\n\n")
-        order1 = Order("AX01", [book1, book2], "BOOKID1", "BILLING_INFO", "SHIPPING_INFO", "LOCATION")
-        order2 = Order("AX01", [book2, book2], "BOOKID1", "BILLING_INFO", "SHIPPING_INFO", "LOCATION")
-        orderList = [order1, order2]
+        #bookJSONData = json.dumps(book1.toJson(), indent=4)
+        #print(bookJSONData)
+
+        #print ("\n\n")
+        #order1 = Order("AX01", [book1, book2], "BOOKID1", "BILLING_INFO", "SHIPPING_INFO", "LOCATION")
+        #order2 = Order("AX01", [book2, book2], "BOOKID1", "BILLING_INFO", "SHIPPING_INFO", "LOCATION")
+        #orderList = [order1, order2]
         orderListJSONData = json.dumps(orderList, default = serialize, indent=4)
         
         responseData['orderList']= orderListJSONData
@@ -555,103 +668,6 @@ def getPublishers():
         responseData['publisherList']= publisherListJSONData
         responseData['type']="success"
         responseData['msg']="getPublishers successful"
-
-        return Response(json.dumps(responseData), status=201, mimetype='application/json')
-    except Exception as e:
-        return responseError(e, "Error: " + str(e)).response
-
-
-@app.route('/addPublisher', methods=['POST'])
-def addPublisher():
-    """
-    addPublisher() :
-
-        
-    """
-    try:
-        print("In addPublisher")
-        req_json= request.get_json()
-        req_json= request.json
-        username = req_json.get('username')
-        publisherName = req_json.get('publisherName')
-        publisherAddress = req_json.get('publisherAddress')
-        publisherEmail = req_json.get('publisherEmail')
-        publisherPhoneNumber = req_json.get('publisherPhoneNumber')
-        publisherBankAccountNumber = req_json.get('publisherBankAccountNumber')
-
-        publisherAddressObj = Address.fromDict(publisherAddress)
-
-
-        #TODO check user is of accounttype owner here via sql
-
-        #TODO sql add to publisher table
-
-        #setup return
-        responseData={}
-        responseData['publisherList']= []
-        responseData['type']= "failure"
-        responseData['msg']=""
-        
-        #TODO sql get collection and set return
-
-        # minic successful addPublisher
-        publisher1Address = Address("100", "Bloom St.", "K4P 0K3", "Toronto", "Ontario", "Canada")
-        publisher2Address = Address("100", "Penguin St.", "P0E 8J7", "Montreal", "Ontario", "Canada")
-
-        newPublisher = Publisher (username, publisherName,  publisherAddressObj, publisherEmail, publisherPhoneNumber, publisherBankAccountNumber)
-        publisher1 = Publisher (username, "Bloomsbury Publishing",  publisher1Address, "Bloomsbury@gmail.com", "6130340000", "1111")
-        publisher2 = Publisher (username, "Penguin Publishing",  publisher2Address, "Penguin@gmail.com", "613200000", "2222")
-
-        publisherList = [publisher1, publisher2, newPublisher]
-        publisherListJSONData = json.dumps(publisherList, default = serialize, indent=4)
-        
-        responseData['publisherList']= publisherListJSONData
-        responseData['type']="success"
-        responseData['msg']="addToCollection successful"
-
-        return Response(json.dumps(responseData), status=201, mimetype='application/json')
-    except Exception as e:
-        return responseError(e, "Error: " + str(e)).response
-
-@app.route('/removePublisher', methods=['POST'])
-def removePublisher():
-    """
-    removePublisher() :
-
-        
-    """
-    try:
-        print("In removePublisher")
-        req_json= request.get_json()
-        req_json= request.json
-        username = req_json.get('username')
-        publisherID = req_json.get('publisherID')
-
-        #TODO check user is of accounttype owner here via sql
-
-        #TODO sql remove from publisher table
-
-        #setup return
-        responseData={}
-        responseData['publisherList']= []
-        responseData['type']= "failure"
-        responseData['msg']=""
-        
-        #TODO sql get collection and set return
-
-        # minic successful removePublisher
-        publisher1Address = Address("100", "Bloom St.", "K4P 0K3", "Toronto", "Ontario", "Canada")
-        publisher2Address = Address("100", "Penguin St.", "P0E 8J7", "Montreal", "Ontario", "Canada")
-
-        publisher1 = Publisher (username, "Bloomsbury Publishing",  publisher1Address, "Bloomsbury@gmail.com", "6130340000", "1111")
-        publisher2 = Publisher (username, "Penguin Publishing",  publisher2Address, "Penguin@gmail.com", "613200000", "2222")
-
-        publisherList = [publisher1, publisher2]
-        publisherListJSONData = json.dumps(publisherList, default = serialize, indent=4)
-        
-        responseData['publisherList']= publisherListJSONData
-        responseData['type']="success"
-        responseData['msg']="removePublisher successful"
 
         return Response(json.dumps(responseData), status=201, mimetype='application/json')
     except Exception as e:
