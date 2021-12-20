@@ -168,18 +168,23 @@ def register():
         #TODO Add to DB and check if its valid here...
 
         # connect to the PostgreSQL server
-        conn = psycopg2.connect("dbname=COMP3005 user=postgres password=james")
+    
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
 
         # create a cursor
         cur = conn.cursor()
 
 	    # execute a statement
         print('PostgreSQL database version:')
-        cur.execute('SELECT version()')
+        cur.execute("insert into b_user values ('1', 'test@test.com', 'first last', 'pass', 'user')")
+        conn.commit()
 
         # display the PostgreSQL database server version
-        db_version = cur.fetchone()
-        print(db_version)
 
        
 	    # close the communication with the PostgreSQL
