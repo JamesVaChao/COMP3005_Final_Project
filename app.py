@@ -45,9 +45,41 @@ def searchForBook():
         req_json= request.get_json()
         req_json= request.json
         bookSearchInfo = req_json.get('bookSearchInfo')
-        searchType = req_json.get('searchType')
+        searchType = req_json.get('searchType').lower()
 
-        #TODO search based on given query
+        # connect to the PostgreSQL server
+    
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
+
+        # create a cursor
+        cur = conn.cursor()
+
+	    # execute a statement
+        if searchType == "all":
+            cur.execute("select * from book where name like '%%%s%%' or isbn like '%%%s%%' or genre like '%%%s%%' or author like '%%%s%%'" % (bookSearchInfo, bookSearchInfo, bookSearchInfo, bookSearchInfo))
+        else:
+            cur.execute("select * from book where %s like '%%%s%%'" % (searchType, bookSearchInfo))
+        result = cur.fetchall()
+       
+	    # close the communication with the PostgreSQL
+        cur.close()
+
+        
+        books = []
+        for book in result:
+            if (book[9] > 0 and book[9] == book[10]):
+                available = "All copies reserved"
+            elif book[9] == 0:
+                available == "No copies available"
+            else:
+                available = "Available"
+            tmpBook = Book(book[0], book[1], available, book[2], book[3], book[11], float(book[4]), float(book[5]), float(book[6]), book[7])
+            books.append(tmpBook.toDict())
 
         responseData={}
         responseData['booksFound']= {}
@@ -58,7 +90,7 @@ def searchForBook():
         book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
         book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
 
-        responseData['booksFound']= [book1.toDict(), book2.toDict()]
+        responseData['booksFound']= [book1.toDict(), book2.toDict()] + books
         responseData['type']="success"
         responseData['msg']="search completed"
 
@@ -121,18 +153,43 @@ def login():
         responseData['type']= "failure"
         responseData['msg']=""
         
-        #TODO Should check if password + username is in database here...
+        # connect to the PostgreSQL server
+    
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
+
+        # create a cursor
+        cur = conn.cursor()
+
+	    # execute a statement
+        cur.execute("select * from b_user where b_user_id = '%s' and password = '%s' fetch first 1 row only" % (username, password))
+        result = cur.fetchall()[0]
+       
+	    # close the communication with the PostgreSQL
+        cur.close()
+
+        if result:
+            user = User(username, result[2], "", password, result[1], result[4])
+        else:
+            # minic successful login regardless of input for now
+            user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
+
+
 
         #TODO Change responseData['msg'] if not found
 
         #If a special type of user then we can ignore this:
-        if(username == "jamesUsername-UserAccount"):
-            user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
-        if(username == "jamesUsername-OwnerAccount"):
-            user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
-        else:
+        #if(username == "jamesUsername-UserAccount"):
+        #    user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
+        #if(username == "jamesUsername-OwnerAccount"):
+        #    user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
+        #else:
             # minic successful login regardless of input for now
-            user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
+        #    user = User(username, "James", "Va-Chao", password, "james@email.com", "user")
             #user = User(username, "James", "Va-Chao", password, "james@email.com", "owner")
 
         responseData['user']= user.toDict()
@@ -156,6 +213,7 @@ def register():
         lastName = req_json.get('lastName')
         email = req_json.get('email')
         accountType = req_json.get('accountType')
+        name = firstName + " " + lastName
 
         
         responseData={}
@@ -163,9 +221,7 @@ def register():
         responseData['type']= "failure"
         responseData['msg']=""
 
-        user = User(username, firstName, lastName, password, email, accountType)
-
-        #TODO Add to DB and check if its valid here...
+        user = User(username, name, "", password, email, accountType)
 
         # connect to the PostgreSQL server
     
@@ -180,12 +236,8 @@ def register():
         cur = conn.cursor()
 
 	    # execute a statement
-        print('PostgreSQL database version:')
-        cur.execute("insert into b_user values ('1', 'test@test.com', 'first last', 'pass', 'user')")
+        cur.execute("insert into b_user values ('%s', '%s', '%s', '%s', '%s')" % (username, email, name, password, accountType))
         conn.commit()
-
-        # display the PostgreSQL database server version
-
        
 	    # close the communication with the PostgreSQL
         cur.close()
