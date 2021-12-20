@@ -348,12 +348,7 @@ def getOwnerBookCollection():
 
 @app.route('/addToOwnerBookCollection', methods=['POST'])
 def addToOwnerBookCollection():
-    """
-    addToOwnerBookCollection() :
-        username
-        book
-        
-    """
+
     try:
         print("In addToOwnerBookCollection")
         req_json= request.get_json()
