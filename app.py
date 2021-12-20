@@ -5,7 +5,7 @@ from flask_cors import CORS
 from resources.address import Address
 from resources.order import Order
 from resources.publisher import Publisher
-
+import psycopg2
 from resources.user import User
 
 from resources.book import Book
@@ -167,6 +167,24 @@ def register():
 
         #TODO Add to DB and check if its valid here...
 
+        # connect to the PostgreSQL server
+        conn = psycopg2.connect("dbname=COMP3005 user=postgres password=james")
+
+        # create a cursor
+        cur = conn.cursor()
+
+	    # execute a statement
+        print('PostgreSQL database version:')
+        cur.execute('SELECT version()')
+
+        # display the PostgreSQL database server version
+        db_version = cur.fetchone()
+        print(db_version)
+
+       
+	    # close the communication with the PostgreSQL
+        cur.close()
+        
         # minic successful register
         responseData['user']= user.toDict()
         responseData['type']="success"
