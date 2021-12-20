@@ -636,6 +636,29 @@ def removeFromOwnerBookCollection():
 
         #TODO sql reomve book from collection
 
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
+
+        # create a cursor
+        cur = conn.cursor()
+
+	    # execute a statement
+        print('PostgreSQL database version:')
+        cur.execute("delete from book where isbn::bigint = " + str(bookID))
+        conn.commit()
+
+        # display the PostgreSQL database server version
+
+        cur.execute("select * from book")
+        collectionBookSQL = cur.fetchall()
+
+	    # close the communication with the PostgreSQL
+        cur.close()
+
         #setup return
         responseData={}
         responseData['ownerBookCollection']= []
