@@ -440,7 +440,8 @@ def getOrderList():
             billing_info = ""
             for thing in bill:
                 billing_info += str(thing) + " "
-            shipping_info = ""
+            cur.execute("select * from address where address_id = " + str(order[5]))
+            shipping_info = cur.fetchall()[0]
             location = order[2]
             tmpOrder = Order(order[0], books, "", billing_info, shipping_info, location)
             orderList.append(tmpOrder)
@@ -496,11 +497,38 @@ def getOwnerBookCollection():
         
         #TODO sql get collection and set it as return
 
-        # minic successful addToOwnerBookCollection
-        book1 = Book (1234, "Harry Potter and the Philosopher's Stone", "available" , "J. K. Rowling",  "Fantasy, Adventure, Fiction", "Bloomsbury Publishing",  350, 15.99, 0.10, "https://upload.wikimedia.org/wikipedia/en/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg")
-        book2 = Book (66, "Star Wars: Thrawn", "available" , "Timothy Zahn",  "Sci-fi, Action, Fiction", "Penguin Publishing",  448, 20.99, 0.4, "https://upload.wikimedia.org/wikipedia/en/d/d0/Star_Wars_Thrawn-Timothy_Zahn.png")
+# connect to the PostgreSQL server
+    
+        conn = psycopg2.connect(
+            host="localhost",
+            database="COMP3005",
+            user="postgres",
+            password="james")
+        # do stuff
 
-        collectionBook = [book1, book2]
+        # create a cursor
+        cur = conn.cursor()
+
+	    # execute a statement
+        cur.execute("select * from book")
+        result = cur.fetchall()
+       
+	    # close the communication with the PostgreSQL
+        cur.close()
+
+        
+        books = []
+        for book in result:
+            if (book[9] > 0 and book[9] == book[10]):
+                available = "All copies reserved"
+            elif book[9] == 0:
+                available == "No copies available"
+            else:
+                available = "Available"
+            tmpBook = Book(book[0], book[1], available, book[2], book[3], book[11], float(book[4]), float(book[5]), float(book[6]), book[7])
+            books.append(tmpBook.toDict())
+
+        collectionBook = books
         collectionBookJSONData = json.dumps(collectionBook, default = serialize, indent=4)
         
         responseData['ownerBookCollection']= collectionBookJSONData
