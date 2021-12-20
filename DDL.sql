@@ -1,5 +1,5 @@
 create table address
-    (address_id         varchar(5),
+    (address_id         serial,
     street_number       varchar(6),
     street_name         varchar(20),
     postal_code         varchar(6),
@@ -15,7 +15,7 @@ create table publisher
     phone_number        varchar(15),
     bank_account_number varchar(12),
     sales_amount        numeric(14, 2) check (sales_amount >= 0),
-    address_id          varchar(5),
+    address_id          serial,
     primary key (publisher_name),
     foreign key (address_id) references address
     );
@@ -25,7 +25,7 @@ create table b_user
     email_address       varchar(255),
     name                varchar(50) not null,
     password            varchar(20) not null,
-    account_type        varchar(5) check (account_type in ('admin', 'b_user')),
+    account_type        varchar(5) check (account_type in ('admin', 'user')),
     primary key(b_user_id)
     );
 
@@ -47,19 +47,19 @@ create table book
     );
 
 create table b_order
-    (b_order_number   varchar(8),
+    (b_order_number   serial,
     cost            numeric(10, 2) check (cost > 0),
     status          varchar(10) check (status in ('in_transit', 'warehouse', 'delivered')),
     date            varchar(8),
     b_user_id         varchar(5),
-    address_id      varchar(5),
+    address_id      serial,
     primary key (b_order_number),
     foreign key (b_user_id) references b_user,
     foreign key (address_id) references address
     );
 
 create table in_b_order
-    (b_order_number   varchar(8),
+    (b_order_number   serial,
     ISBN            varchar(13),
     number          numeric(3, 0) check (number > 0),
     primary key (b_order_number, ISBN),
@@ -68,9 +68,9 @@ create table in_b_order
     );
 
 create table bill_to
-    (b_order_number       varchar(8),
+    (b_order_number       serial,
     credit_card_number  varchar(16),
-    address_id          varchar(5),
+    address_id          serial,
     primary key (b_order_number),
     foreign key (b_order_number) references b_order,
     foreign key (address_id) references address
